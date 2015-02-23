@@ -10,7 +10,7 @@ logging.basicConfig(filename='/var/log/ceph/stats-osd-mon.log',
 
 def query_osd_sock(osd_sock, query):
     try:
-        sock = socket.socket(socket.AF_UNIX, socket.STREAM)
+        sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         sock.connect(osd_sock)
     except socket.error, e:
         logging.info("Connection with socket failed with %s" % e)
