@@ -27,9 +27,16 @@ def query_osd_sock(osd_sock, query):
     return json_data
 
 
-def main():
-    socks = glob.glob('/var/run/ceph/*osd*asok')
+def process_socks(path):
+    socks = glob.glob(path)
     for sock in socks:
         r = query_osd_sock(sock, '{\"prefix\": \"perf dump\"}\0')
         if r is not None:
-            print r
+            print r["filestore"]["journal_latency"]["sum"]
+
+
+def main():
+    process_socks('/var/run/ceph/*osd*asok')
+
+if __name__ == "__main__":
+    main()
