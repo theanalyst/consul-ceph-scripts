@@ -35,7 +35,7 @@ def process_socks(path):
         r = query_osd_sock(sock, '{\"prefix\": \"perf dump\"}\0')
         if r is not None:
             latency = r["filestore"]["journal_latency"]["sum"]
-            consul().set("ceph/%s/latency" % osd_id, latency)
+            consul().kv.set("ceph/%s/latency" % osd_id, latency)
 
 
 def consul(host='127.0.0.1', port=8500):
