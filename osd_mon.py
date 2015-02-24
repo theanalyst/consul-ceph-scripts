@@ -39,7 +39,7 @@ def process_socks(path):
 
 
 def consul(host='127.0.0.1', port=8500):
-    return consulate.Consul(host, port)
+    return consulate.Consulate(host, port)
 
 
 def main():
