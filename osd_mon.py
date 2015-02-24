@@ -3,6 +3,7 @@ import struct
 import json
 import glob
 import logging
+import consulate
 
 logging.basicConfig(filename='/var/log/ceph/stats-osd-mon.log',
                     level=logging.INFO)
@@ -30,9 +31,15 @@ def query_osd_sock(osd_sock, query):
 def process_socks(path):
     socks = glob.glob(path)
     for sock in socks:
+        osd_id = sock.split(".")[-2]
         r = query_osd_sock(sock, '{\"prefix\": \"perf dump\"}\0')
         if r is not None:
-            print r["filestore"]["journal_latency"]["sum"]
+            latency = r["filestore"]["journal_latency"]["sum"]
+            consul().set("ceph/%s/latency" % osd_id, latency)
+
+
+def consul(host='127.0.0.1', port=8500):
+    return consulate.Consul(host, port)
 
 
 def main():
