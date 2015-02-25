@@ -35,7 +35,14 @@ def process_socks(path):
         r = query_osd_sock(sock, '{\"prefix\": \"perf dump\"}\0')
         if r is not None:
             latency = r["filestore"]["journal_latency"]["sum"]
-            consul().kv.set("ceph/osd_%s/latency" % osd_id, latency)
+            set_consul_kv("ceph/osd_%d/latency" % osd_id, latency)
+
+
+def set_consul_kv(key, value):
+    try:
+        consul().kv.set(key, value)
+    except AttributeError as e:
+        logging.error("Couldn't update K-V pair %s" % e)
 
 
 def consul(host='127.0.0.1', port=8500):
